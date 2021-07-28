@@ -5,7 +5,11 @@ const api = require('./api');
 app.use(api);
 
 app.get('/', (req, res) =>{ 
-    res.json("Server is running again");
+    if(req.headers["user-agent"].toLowerCase().indexOf('postman') > -1){
+        res.json("Welcome Developer");
+    }else{
+        res.json("Server is running again");
+    }
 })
 
 module.exports = app;
