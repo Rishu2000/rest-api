@@ -92,7 +92,19 @@ app.delete('/users/:id', (req, res) => {
     const indexNo = +req.params.id;
     if(users[indexNo]){
         delete users[indexNo];
-        res.json("Succefully deleted.")
+        res.status(204).json("Succefully deleted.")
+    }else{
+        res.status(404).json("Not Found");
+    }
+})
+app.put('/users/:id', (req, res) => {
+    const indexNo = +req.params.id;
+    if(users[indexNo]){
+        users[indexNo] = req.body;
+        res.status(202).json({
+            Success: true,
+            Message:`Successfully updated the user ${users[indexNo].Name}`
+        })
     }else{
         res.status(404).json("Not Found");
     }
