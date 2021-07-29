@@ -2,10 +2,9 @@ const express = require('express');
 const app = express();
 const users = require('../../constants/users');
 
-let Authentication = false;
-
 app.get('/users', (req, res) =>{
-    if(Authentication){
+    const {Authenticated} = req.session;
+    if(Authenticated){
         res.json(users.map((u,UserId) => {
             const a = {UserId, ...u};
             delete a.Password;
@@ -16,7 +15,8 @@ app.get('/users', (req, res) =>{
     }
 })
 app.get('/login', (req, res) => {
-    res.json({Authentication});
+    const {Authenticated} = req.session;
+    res.json({Authenticated});
 })
 app.post('/login', (req, res) => {
     const {username, password} = req.body;
@@ -25,13 +25,19 @@ app.post('/login', (req, res) => {
     }else{
         const match = users.filter((u) => u.Username.toLowerCase() === username.toLowerCase() && u.Password === password);
         if(match.length == 1){
-            Authentication = true;
+            const user = {...match[0]};
+            delete user.Password;
+            req.session.Authenticated = user;
             res.json("You are in.");
         }else{
-            Authentication = false;
-            res.status(404).json("Wrong");
+            req.session.destroy();
+            res.status(404).json("Wrong Password or username.");
         }
     }
+})
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.json("Logout")
 })
 app.get('/users/:id', (req, res) =>{
     const index = +req.params.id;
