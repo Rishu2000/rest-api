@@ -2,17 +2,21 @@ const express = require('express');
 const app = express();
 const users = require('../../constants/users');
 
-app.get('/users', (req, res) =>{
+app.use((req, res, next) => {
     const {Authenticated} = req.session;
-    if(Authenticated){
-        res.json(users.map((u,UserId) => {
-            const a = {UserId, ...u};
-            delete a.Password;
-            return a;
-        }))
+    if(Authenticated || (req.path === '/users' && req.method === 'POST') || (req.path === '/login')){
+        next();
     }else{
         res.status(401).json("Please login to see.")
     }
+})
+
+app.get('/users', (req, res) =>{
+    res.json(users.map((u,UserId) => {
+        const a = {UserId, ...u};
+        delete a.Password;
+        return a;
+    }))
 })
 app.post('/users', (req, res) => {
     const {Username,Name,Password,LinkedIn} = req.body;
