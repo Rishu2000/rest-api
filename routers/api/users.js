@@ -88,5 +88,14 @@ app.get('/users/:id', (req, res) =>{
         res.status(404).json("Not Found");
     }
 })
+app.delete('/users/:id', (req, res) => {
+    const indexNo = +req.params.id;
+    if(users[indexNo]){
+        delete users[indexNo];
+        res.json("Succefully deleted.")
+    }else{
+        res.status(404).json("Not Found");
+    }
+})
 
 module.exports = app;
