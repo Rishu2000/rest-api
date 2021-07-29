@@ -4,7 +4,6 @@ const users = require('../../constants/users');
 
 let Authentication = false;
 
-app.use(express.json());
 app.get('/users', (req, res) =>{
     if(Authentication){
         res.json(users.map((u,UserId) => {
