@@ -14,6 +14,37 @@ app.get('/users', (req, res) =>{
         res.status(401).json("Please login to see.")
     }
 })
+app.post('/users', (req, res) => {
+    const {Username,Name,Password,LinkedIn} = req.body;
+    if(!Username || !Name || !Password){
+        res.status(400).json({
+            Success:false,
+            Message:"Please provide all the required fields."
+        });
+    }else{
+        if(Username.trim().length > 3 && Password.trim().length > 4 && Name.trim().length > 4){
+            const match = users.filter(u => u.Username == Username);
+            console.log(match)
+            if(match.length > 0){
+                res.status(408).json({
+                    Success:false,
+                    Message:"Username is not available."
+                });
+            }else{
+                users.push({Username,Name,Password,LinkedIn});
+                res.status(201).json({
+                    Success:true,
+                    Message:`${Username} has been created.`
+                })
+            }
+        }else{
+            res.status(500).json({
+                Success:false,
+                Message:"Bad Credentisial."
+            });
+        }
+    }
+})
 app.get('/login', (req, res) => {
     const {Authenticated} = req.session;
     res.json({Authenticated});
