@@ -28,7 +28,9 @@ app.post('/login', (req, res) => {
             const user = {...match[0]};
             delete user.Password;
             req.session.Authenticated = user;
-            res.json("You are in.");
+            res.json({
+                Success: true,
+            });
         }else{
             req.session.destroy();
             res.status(404).json("Wrong Password or username.");
@@ -37,7 +39,9 @@ app.post('/login', (req, res) => {
 })
 app.get('/logout', (req, res) => {
     req.session.destroy();
-    res.json("Logout")
+    res.json({
+        Success: true
+    })
 })
 app.get('/users/:id', (req, res) =>{
     const index = +req.params.id;
